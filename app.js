@@ -1,16 +1,25 @@
 const productManagment = require("./segundaEntrega")
 const express = require("express");
 const app = express();
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/ping", (req, res) => {
     res.send = ("pong")
 })
-app.get("/productos", (req, res) => {
-    let productos = productManagment.productList
-    res.send(productos)
+app.get("/productos", async(req, res) => {
+    try {
+        const productos = await productManagment.traerDeApi()
+        const listaProd = productManagment.productList
+        if (listaProd) {
+            res.send(listaProd)
+        } else {
+            res.status(404).send("no hay productos en la lista")
 
+        }
+    } catch (error) { res.status(500).send("ocurrio un error") }
 })
+
 
 app.get("/productos/:id", async(req, res) => {
     try {
@@ -27,7 +36,7 @@ app.get("/productos/:id", async(req, res) => {
     }
 });
 app.get("/productos", (req, res) => {
-    let limit = req.query.limit
+    let limit = req.query.limit;
     const productos = productManagment.productList
     if (limit < length.productList && limit > 0 && limit === Number) {
         const prodSelect = productos.slice(0, parseInt(limit))
