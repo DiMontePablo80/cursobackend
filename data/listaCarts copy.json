@@ -1,1 +1,131 @@
-[{"id":1,"products":[{"title":"tallarines","description":"con salsa escarparo","price":3500,"status":true,"code":586,"category":"fideos","stock":121},{"title":"ravioles","description":"de verdura con salsa fileto","price":3200,"status":true,"thumbnail":"https://tse4.mm.bing.net/th?id=OIP.BsgzHt3D0XgBYWAL8BvhzwHaDl&pid=Api&P=0&h=180","code":897,"category":"rellenos","stock":251},{"title":"ravioles","description":"de verdura con salsa de crema","price":3500,"status":true,"thumbnail":"https://tse2.mm.bing.net/th?id=OIP.JtWOEmEr8-pn6rzmKgh2cQHaFG&pid=Api&P=0&h=180","code":1234,"category":"rellenos","stock":241}]},{"id":2,"products":[{"id":0,"title":"tallarines","description":"con salsa escarparo","price":3500,"status":true,"code":586,"category":"fideos","stock":121},{"id":1,"title":"ravioles","description":"de verdura con salsa fileto","price":3200,"status":true,"thumbnail":"https://tse4.mm.bing.net/th?id=OIP.BsgzHt3D0XgBYWAL8BvhzwHaDl&pid=Api&P=0&h=180","code":897,"category":"rellenos","stock":251},{"id":2,"title":"ravioles","description":"de verdura con salsa de crema","price":3500,"status":true,"thumbnail":"https://tse2.mm.bing.net/th?id=OIP.JtWOEmEr8-pn6rzmKgh2cQHaFG&pid=Api&P=0&h=180","code":1234,"category":"rellenos","stock":241},{"id":3,"title":"tallarines","description":"con salsa a los 4 quesos","price":4000,"status":true,"thumbnail":"https://tse3.mm.bing.net/th?id=OIP.eTVX-D0Z1ofxxYBvpsrggwHaD4&pid=Api&P=0&h=180","code":456,"category":"fideos","stock":301},{"id":4,"title":"ravioles","description":" de verdura y pollo con salsa bolognesa","price":3700,"status":true,"thumbnail":"https://tse1.mm.bing.net/th?id=OIP.bi9EZNp5Fq1i0Vaj0aWzQgHaHa&pid=Api&P=0&h=180","code":568,"category":"rellenos","stock":301},{"id":5,"title":"ravioles","description":" de verdura verdura y pollo salsa 4 quesos","price":3200,"status":true,"code":234,"category":"rellenos","stock":201}]},{"id":3,"products":[{"title":"tallarines","description":"con salsa a los 4 quesos","price":4000,"status":true,"thumbnail":"https://tse3.mm.bing.net/th?id=OIP.eTVX-D0Z1ofxxYBvpsrggwHaD4&pid=Api&P=0&h=180","code":456,"category":"fideos","stock":301},{"title":"ravioles","description":" de verdura y pollo con salsa bolognesa","price":3700,"status":true,"thumbnail":"https://tse1.mm.bing.net/th?id=OIP.bi9EZNp5Fq1i0Vaj0aWzQgHaHa&pid=Api&P=0&h=180","code":568,"category":"rellenos","stock":301}]}]
+[{
+        "id": 0,
+        "products": [{
+                "id": 0,
+                "title": "tallarines",
+                "description": "con salsa escarparo",
+                "price": 3500,
+                "status": true,
+                "code": 586,
+                "category": "fideos",
+                "stock": 121
+            },
+            {
+                "id": 1,
+                "title": "ravioles",
+                "description": "de verdura con salsa fileto",
+                "price": 3200,
+                "status": true,
+                "thumbnail": "https://tse4.mm.bing.net/th?id=OIP.BsgzHt3D0XgBYWAL8BvhzwHaDl&pid=Api&P=0&h=180",
+                "code": 897,
+                "category": "rellenos",
+                "stock": 251
+            },
+            {
+                "id": 2,
+                "title": "ravioles",
+                "description": "de verdura con salsa de crema",
+                "price": 3500,
+                "status": true,
+                "thumbnail": "https://tse2.mm.bing.net/th?id=OIP.JtWOEmEr8-pn6rzmKgh2cQHaFG&pid=Api&P=0&h=180",
+                "code": 1234,
+                "category": "rellenos",
+                "stock": 241
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "products": [{
+                "id": 0,
+                "title": "tallarines",
+                "description": "con salsa escarparo",
+                "price": 3500,
+                "status": true,
+                "code": 586,
+                "category": "fideos",
+                "stock": 121
+            },
+            {
+                "id": 1,
+                "title": "ravioles",
+                "description": "de verdura con salsa fileto",
+                "price": 3200,
+                "status": true,
+                "thumbnail": "https://tse4.mm.bing.net/th?id=OIP.BsgzHt3D0XgBYWAL8BvhzwHaDl&pid=Api&P=0&h=180",
+                "code": 897,
+                "category": "rellenos",
+                "stock": 251
+            },
+            {
+                "id": 2,
+                "title": "ravioles",
+                "description": "de verdura con salsa de crema",
+                "price": 3500,
+                "status": true,
+                "thumbnail": "https://tse2.mm.bing.net/th?id=OIP.JtWOEmEr8-pn6rzmKgh2cQHaFG&pid=Api&P=0&h=180",
+                "code": 1234,
+                "category": "rellenos",
+                "stock": 241
+            },
+            {
+                "id": 3,
+                "title": "tallarines",
+                "description": "con salsa a los 4 quesos",
+                "price": 4000,
+                "status": true,
+                "thumbnail": "https://tse3.mm.bing.net/th?id=OIP.eTVX-D0Z1ofxxYBvpsrggwHaD4&pid=Api&P=0&h=180",
+                "code": 456,
+                "category": "fideos",
+                "stock": 301
+            },
+            {
+                "id": 4,
+                "title": "ravioles",
+                "description": " de verdura y pollo con salsa bolognesa",
+                "price": 3700,
+                "status": true,
+                "thumbnail": "https://tse1.mm.bing.net/th?id=OIP.bi9EZNp5Fq1i0Vaj0aWzQgHaHa&pid=Api&P=0&h=180",
+                "code": 568,
+                "category": "rellenos",
+                "stock": 301
+            },
+            {
+                "id": 5,
+                "title": "ravioles",
+                "description": " de verdura verdura y pollo salsa 4 quesos",
+                "price": 3200,
+                "status": true,
+                "code": 234,
+                "category": "rellenos",
+                "stock": 201
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "products": [{
+                "id": 0,
+                "title": "tallarines",
+                "description": "con salsa a los 4 quesos",
+                "price": 4000,
+                "status": true,
+                "thumbnail": "https://tse3.mm.bing.net/th?id=OIP.eTVX-D0Z1ofxxYBvpsrggwHaD4&pid=Api&P=0&h=180",
+                "code": 456,
+                "category": "fideos",
+                "stock": 301
+            },
+            {
+                "id": 1,
+                "title": "ravioles",
+                "description": " de verdura y pollo con salsa bolognesa",
+                "price": 3700,
+                "status": true,
+                "thumbnail": "https://tse1.mm.bing.net/th?id=OIP.bi9EZNp5Fq1i0Vaj0aWzQgHaHa&pid=Api&P=0&h=180",
+                "code": 568,
+                "category": "rellenos",
+                "stock": 301
+            }
+        ]
+    }
+]

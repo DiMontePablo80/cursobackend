@@ -17,7 +17,7 @@ app.use("/api/products/PUT", routerPut)
 app.use("/api/products/DELETE", routerDelete)
 app.use("/api/carts/GET", routerCarts)
 app.use("/api/carts/POST", routerCarts)
-app.use("/POST/:cid/product/:pid ", routerCarts)
+app.use("/POST", routerCarts)
 
 app.listen(8080, () => {
     console.log("corriendo aplicacion por puerto 8080")

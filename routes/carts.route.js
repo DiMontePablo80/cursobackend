@@ -31,15 +31,16 @@ route.post("/", async(req, res) => {
     }
 
 })
-route.post("/", async(req, res) => {
+route.post("/:cid/product/:pid", async(req, res) => {
     try {
-        const cardId = req.params.cid
-        const productId = req.params.pid
-        let quantity = req.body
+        const cardId = parseInt(req.params.cid)
+        const productId = parseInt(req.params.pid)
+        let quantity = parseInt(req.body)
 
-        const cart = await carts.cartInList(cardId)
+        let cart = await carts.cartInList(cardId)
         if (!cart) {
             res.status(404).send("carrito no existe")
+            console.log(cart)
         } else {
             await carts.agregarProductsAlCarrito(cardId, productId, quantity)
             res.status(200).send("el producto se agrego al carrito")

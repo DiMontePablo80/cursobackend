@@ -12,8 +12,9 @@ class Carts {
 
     }
     async getCarts() {
-        const fs = require('fs')
+
         try {
+            const fs = require('fs')
             const lista = await fs.promises.readFile('./data/listaCarts.json')
             const listajs = JSON.parse(lista)
             return listajs
@@ -25,7 +26,7 @@ class Carts {
     addCartsToList(cart) {
         this.ListCarts.push(cart)
     }
-    guardarCarts(listCarts) {
+    guardarCarts() {
         const fs = require('fs')
         let jsonCarts = JSON.stringify(this.ListCarts)
         fs.promises.writeFile('./data/listaCarts.json', jsonCarts)
@@ -61,30 +62,36 @@ class Carts {
         return lista.some((c) => c.id == cartId)
     }
     async agregarProductsAlCarrito(cartId, prodId, quantity) {
-        const fs = require('fs')
         try {
+            const fs = require('fs')
             const lista = await fs.promises.readFile('./data/listaCarts.json')
             const listajs = JSON.parse(lista)
             listajs.forEach((carrito) => {
-                carrito.id == cartId
-                if (carrito.products.id == prodId) {
-                    carrito.products.quantity += quantity
-                } else {
-                    carrito.products.push({
-                        id: prodId,
-                        quantity: quantity
-                    })
+                if (carrito.id == cartId) {
+                    const prodInCarrito = carrito.products.some((p) => p.id == prodId)
+                    console.log(prodInCarrito)
+                    if (prodInCarrito) {
+                        const indice = carrito.products.findIndex((prod) => prod.id == prodId)
+                        carrito.products[indice].quantity += 1
+                        console.log("el producto existe. Se agrego una unidad a la cantidad")
+                    } else {
+                        const product = {
+                            id: prodId,
+                            quantity: 1
+                        }
+                        carrito.products.push(product)
+                    }
                 }
             })
-            this.guardarCarts(listajs)
-            console.log(listajs)
 
+            this.ListCarts = listajs
+            this.guardarCarts()
         } catch (error) {
             console.log("error")
         }
+
     }
-
-
 }
+
 const carts = new Carts
 module.exports = carts
