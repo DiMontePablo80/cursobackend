@@ -1,47 +1,24 @@
-const productManagment = require("./segundaEntrega")
 const express = require("express");
+const routerProductos = require("./routes/productos.router")
+const routerPost = require("./routes/post.router")
+const routerPut = require("./routes/put.route")
+const routerCarts = require("./routes/carts.route")
+const routerDelete = require("./routes/delete.route")
 const app = express();
+
+// midlware
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/ping", (req, res) => {
-    res.send = ("pong")
-})
-app.get("/productos", async(req, res) => {
+//routes
+app.use("/api/products/GET", routerProductos)
+app.use("/api/products/POST", routerPost)
+app.use("/api/products/PUT", routerPut)
+app.use("/api/products/DELETE", routerDelete)
+app.use("/api/carts/GET", routerCarts)
+app.use("/api/carts/POST", routerCarts)
+app.use("/POST/:cid/product/:pid ", routerCarts)
 
-    try {
-        let limit = req.query.limit;
-        const productos = await productManagment.traerDeApi()
-        const listaProd = productManagment.productList
-        limit = parseInt(limit)
-        if (limit < listaProd.length && limit > 0) {
-            const prodSelect = listaProd.slice(0, parseInt(limit))
-            return res.send(prodSelect)
-        } else {
-            res.send(listaProd)
-        }
-    } catch (error) { res.status(500).send("ocurrio un error") }
-})
-
-
-app.get("/productos/:id", async(req, res) => {
-    try {
-        let id = req.params.id;
-        let productoId = await productManagment.getProductsById(id)
-        if (productoId == null) {
-            res.status(404).send("el producto no se encuentra en la lista")
-        } else {
-            res.send(productoId)
-        }
-    } catch (error) {
-        res.status(500).send("ah ocurrido un error")
-
-    }
-});
-
-
-
-
-app.listen(3000, () => {
-    console.log("corriendo aplicacion por puerto 3000")
+app.listen(8080, () => {
+    console.log("corriendo aplicacion por puerto 8080")
 })
