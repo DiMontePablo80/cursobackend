@@ -1,20 +1,27 @@
-<div style="text-align: center;"> <h1>lista de productos</h1></div>
+<div style="text-align: center;">
+    <h1>lista de productos</h1>
+</div>
 <div id="cargarProd" style="background-color: rgb(218, 222, 222);">
-    <h3 style="text-align: left";>Agregar Productos</h3></div>
-    <form style="background-color: rgb(218, 222, 222);"id="dataForm" method="po">
+
+    <h3 style="text-align: left" ;>Agregar Productos</h3>
+</div>
+<div>
+    <form style="background-color: rgb(218, 222, 222)" id="dataForm">
         <label for="title">title</label>
-        <input type="text" name="nombreP">
+        <input type="text" id="titleP" name="titlep">
         <label for="description">description</label>
-        <input type="text" name="description">
+        <input type="text" id="descriptionP" name="descriptionP">
         <label for="price">price</label>
-        <input type="number" name="priceP">
+        <input type="number" id="priceP" name="priceP">
         <label for="category">category</label>
-        <input type="text" name="categoriaP">
+        <input type="text" id="categoryP" name="categoryP">
         <label for="stock">stock</label>
-        <input type="text" name="stockP">
-        <button type="submit" name="botonEnviar">Agregar</button>
-        
+        <input type="text" id="stockP" name="stockP">
+        <button type="click" id="botonEnviar">Enviar</button>
+
     </form>
+</div>
+
 <div id="div_ListaProductos">
 </div>
 

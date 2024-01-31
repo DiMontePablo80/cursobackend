@@ -1,35 +1,59 @@
 const socket = io()
+let lista_Prod
 
-const div_ListaProductos = document.getElementById("div_ListaProductos")
-div_ListaProductos.innerHTML = ""
 
 socket.on('productos', listaProductos => {
+    const div_ListaProductos = document.getElementById("div_ListaProductos")
+    div_ListaProductos.innerHTML = ""
+    lista_Prod = listaProductos
     const productos = listaProductos.map((prod) => {
         return `<div class="card" style="width: 18rem;">
         <img src="${prod.thumbnail}" class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">Nombre: ${prod.title}</h5>
-            <p class="card-text">price: ${prod.price }</p>
+            <p class="card-text">price: ${prod.price}</p>
             <p class="card-text">categoria:${prod.category}</p>
             <p class="card-text">stock:${prod.stock}</p>
             <a href="#" class="btn btn-primary">Ver Detalle</a>
         </div>
     </div> `
     })
+
     div_ListaProductos.innerHTML = productos
 })
 
-const form = document.getElementById("dataForm")
-const title = document.getElementById("titleP")
-const description = document.getElementById("descriptionP")
-const price = document.getElementById("priceP")
-const stock = document.getElementById("stockP")
-const category = document.getElementById("categoryP")
-const boton = documente.getElementById("botonEnviar")
-
-boton.addEvenListener("click", (e) => {
+const dataForm = document.getElementById("dataForm")
+dataForm.addEventListener("submit", (e) => {
     e.preventDefault()
-    const prod = { title: title.value, description: description.value, price: price.value, stock: stock.value, category: category.value, status: "true" }
-    socket.emit("newProducto", prod)
-    prod = ""
+    const title = document.getElementById("titleP").value
+    const description = document.getElementById("descriptionP").value
+    const price = document.getElementById("priceP").value
+    const stock = document.getElementById("stockP").value
+    const category = document.getElementById("categoryP").value
+    lista_Prod.push({
+        id: lista_Prod.length,
+        thumbnail: "none",
+        title: title,
+        description: description,
+        price: price,
+        stock: stock,
+        category: category
+    })
+
+    const productos = lista_Prod.map((prod) => {
+        const div_ListaProductos = document.getElementById("div_ListaProductos")
+        div_ListaProductos.innerHTML = ""
+        return `<div class="card" style="width: 18rem;">
+            <img src="${prod.thumbnail}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Nombre: ${prod.title}</h5>
+                <p class="card-text">price: ${prod.price}</p>
+                <p class="card-text">categoria:${prod.category}</p>
+                <p class="card-text">stock:${prod.stock}</p>
+                <a href="#" class="btn btn-primary">Ver Detalle</a>
+            </div>
+        </div> `
+    })
+    div_ListaProductos.innerHTML = productos
+    socket.emit('listaActualizada', lista_Prod)
 })

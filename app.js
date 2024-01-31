@@ -3,16 +3,14 @@ const routerProductos = require("./routes/productos.router")
 const routerCarts = require("./routes/carts.route")
 const views = require("./routes/views.router")
 const handlebars = require("express-handlebars")
-const { Server } = require("socket.io");
-const { promises } = require("dns");
-const { resolve } = require("path");
-const { rejects } = require("assert");
+const { Server, BroadcastOperator } = require("socket.io");
+const { SocketAddress } = require("net");
 const app = express();
 const serverHttp = app.listen(8080, () => {
         console.log("corriendo aplicacion por puerto 8080")
     }) //inicio de websocket
-const serverSocket = new Server(serverHttp)
-    //andlebars
+const io = new Server(serverHttp)
+    //handlebars
 app.engine("handlebars", handlebars.engine());
 app.set("views", "./views");
 app.set("view engine", "handlebars");
@@ -31,30 +29,19 @@ app.use("/api/carts/GET", routerCarts)
 app.use("/api/carts/POST", routerCarts)
 app.use("/POST", routerCarts)
 app.use("/", views)
-
-serverSocket.on('connection', () => {
+let lista_Productos
+io.on('connection', () => {
     console.log('Nuevo cliente conectado')
     const productManagment = require("./segundaEntrega")
-    const listProductos = productManagment.getProducts()
+    let listProductos = productManagment.getProducts()
         .then((res) => {
-            serverSocket.emit("productos", res)
+            lista_Productos = res
+            io.emit("productos", lista_Productos)
         })
-        .catch((error) => console.log(error))
-
-    serverSocket.on("newProducto", producto => {
-        let listaProductos = productManagment.getProducts()
-            .then(() => listaProductos.push(producto))
-            .catch((error) => console.log(error))
-
-        listaProductos = productManagment.reordenarID(listaProductos)
-        const fs = require('fs')
-        lista = productManagment.reordenarID(listaProductos)
-        serverSocket.emit("productos ", listaActualizada)
-
-        let jsonData = JSON.stringify(lista)
-        fs.promises.writeFile('./data/listaGuardada.json', jsonData)
-            .then(() => console.log("se guardo la información correctamente"))
-            .catch((error) => console.log(error))
+        .catch((error) => {
+            console.log("ocurrio un error", error)
+        })
+    io.on("listaActualizada", (lista) => {
+        console.log(lista)
     })
-
 })
