@@ -30,7 +30,7 @@ app.use("/api/carts/POST", routerCarts)
 app.use("/POST", routerCarts)
 app.use("/", views)
 let lista_Productos
-io.on('connection', () => {
+io.on('connection', (socket) => {
     console.log('Nuevo cliente conectado')
     const productManagment = require("./segundaEntrega")
     let listProductos = productManagment.getProducts()
@@ -41,7 +41,13 @@ io.on('connection', () => {
         .catch((error) => {
             console.log("ocurrio un error", error)
         })
-    io.on("listaActualizada", (lista) => {
-        console.log(lista)
+    socket.on("listaActualizada", (lista) => {
+        const listaOrdenada = productManagment.reordenarID(lista)
+        const fs = require('fs')
+        let jsonData = JSON.stringify(listaOrdenada)
+        fs.promises.writeFile('./data/listaGuardada.json', jsonData)
+            .then(() => console.log("se guardo de forma exitosa"))
+            .catch((error) => console.log(error))
+
     })
 })
