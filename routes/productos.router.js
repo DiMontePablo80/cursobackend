@@ -2,7 +2,9 @@ const express = require("express")
 const router = express.Router()
 const upload = require("../utils/upload.middleware");
 const productsModel = require("../dao/models/products.model")
-    // get all products
+
+
+// get all products
 router.get("/", async(req, res) => {
 
     try {
@@ -41,37 +43,30 @@ router.get("/:uid", async(req, res) => {
 
     } catch (error) {
         console.log({
-            status: 500.,
+            status: 500,
             mensaje: "ah ocurrido un error al buscar un producto en bd"
         })
 
     }
-});
+})
+
 router.post("/", upload.single('image'), async(req, res) => {
 
         let thumbnail = req.file.filename
-        let { title, description, price, stock, code, category, quantity } = req.body;
-
-        if (!title || !description || !price || !stock || !thumbnail || !code || !category || !quantity) {
-            console.log({
-                status: 400,
-                result: "error",
-                error: "Incomplete values"
-            })
-        }
+        let producto = req.body;
 
         try {
             await productsModel.create({
-                title,
-                description,
-                price,
-                stock,
-                thumbnail, //imagen
-                code,
-                category,
-                quantity
+                title: producto.title,
+                description: producto.description,
+                price: producto.price,
+                stock: producto.stock,
+                thumbnail: thumbnail, //imagen
+                code: producto.code,
+                category: producto.category,
+                quantity: producto.quantity
             });
-            res.render("products", {})
+            res.redirect("products")
 
         } catch (error) {
 
