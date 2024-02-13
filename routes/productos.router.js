@@ -19,6 +19,7 @@ router.get("/", async(req, res) => {
         })
     }
 })
+
 router.get("/new", (req, res) => {
     res.render("new-product")
 })
@@ -70,7 +71,7 @@ router.post("/", upload.single('image'), async(req, res) => {
                 category,
                 quantity
             });
-            res.redirect("products")
+            res.render("products", {})
 
         } catch (error) {
 
@@ -112,22 +113,6 @@ router.put("/:pid", async(req, res) => {
         });
 
     }
-
-    /*
-        try {
-
-            let productoId = await productsModel.findById(id)
-            if (!productoId) {
-                res.status(404).send("el producto no se encuentra en la lista")
-            } else if (!cuerpo) { //gregar justificaciones
-                res.status(400).send("El contenido esta vacio")
-            } else {
-                const productUpdate = await productsModel.findByIdAndUpdate
-                res.send("el producto fue actualizado correctamente")
-            }
-        } catch (error) { res.send("se produjo error al actualizar") }
-        */
-
 })
 
 

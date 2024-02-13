@@ -51,7 +51,6 @@ io.on('connection', (socket) => {
 
     socket.on("newProduct", (prod) => {
         const nuevoProd = {
-            id: lista_Productos.length,
             title: prod.title,
             description: prod.description,
             code: prod.code,
@@ -61,29 +60,8 @@ io.on('connection', (socket) => {
             stock: prod.stock,
             category: prod.category
         }
-
-        if (lista_Productos.some((p) => p.code == nuevoProd.code)) {
-            lista_Productos.forEach((prod) => {
-                prod.code == nuevoProd.code
-                prod.stock += 1
-                console.log(`se agrego 1 al stock de ${prod.title}`)
-            })
-        } else {
-            lista_Productos.push(nuevoProd)
-
-        }
-        console.log(lista_Productos)
-        const listaActualizada = productManagment.reordenarID(lista_Productos)
-        io.emit("productos", listaActualizada)
         productsModel.create(nuevoProd)
-
-        const fs = require('fs')
-        let jsonData = JSON.stringify(listaActualizada)
-        fs.promises.writeFile('./data/listaGuardada.json', jsonData)
-            .then(() => console.log("se guardo de forma exitosa"))
-            .catch((error) => console.log(error))
-
-
+        io.emit("productos", lista_Productos)
     })
 })
 let messages = [];
