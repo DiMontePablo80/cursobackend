@@ -1,90 +1,158 @@
 const express = require("express")
-const route = express.Router()
-const productManagment = require("../segundaEntrega")
-
-
-// reglas de products
-
-route.get("/", async(req, res) => {
+const router = express.Router()
+const upload = require("../utils/upload.middleware");
+const productsModel = require("../dao/models/products.model")
+    // get all products
+router.get("/", async(req, res) => {
 
     try {
-        let limit = req.query.limit;
-        const productos = await productManagment.getProducts()
-        limit = parseInt(limit)
-        if (limit < productos.length && limit > 0) {
-            const prodSelect = productos.slice(0, parseInt(limit))
-            return res.status(200).send(prodSelect)
-        } else {
-            res.send(productos)
-        }
-    } catch (error) { res.status(500).send("ocurrio un error") }
-})
+        const products = await productsModel.find().lean()
+        res.render("products", { products })
 
-
-route.get("/:id", async(req, res) => {
-    try {
-
-        let id = req.params.id;
-        let productoId = await productManagment.getProductsById(id)
-        if (productoId == null) {
-            res.status(404).send("el producto no se encuentra en la lista")
-        } else {
-            res.send(productoId)
-        }
     } catch (error) {
-        res.status(500).send("ah ocurrido un error")
+        console.log("Cannot get users from Mongo: " + error)
+        console.log({
+            status: 500,
+            result: "error",
+            error: "Error getting data from DB"
 
-    }
-});
-route.post("/", async(req, res) => {
-
-    try {
-        let listaProductos = await productManagment.getProducts()
-        const newProducto = req.body
-        if (newProducto) {
-            listaProductos.push(newProducto)
-            lista = productManagment.reordenarID(listaProductos)
-            const fs = require('fs')
-            lista = productManagment.reordenarID(lista)
-            let jsonData = JSON.stringify(lista)
-            fs.promises.writeFile('./data/listaGuardada.json', jsonData)
-                .then(() => console.log("se guardo de forma exitosa"))
-                .catch((error) => console.log(error))
-            res.status(201).send(`el producto ${req.body.title} se agrego correctamente`)
-        } else {
-            res.status(400).send("ocurrio un error")
-        }
-    } catch (error) {
-        res.status(500).send("ocurrio un error al cargar producto")
-
+        })
     }
 })
-route.put("/:id", async(req, res) => {
+router.get("/new", (req, res) => {
+    res.render("new-product")
+})
+
+// buscar un producto por ID
+router.get("/:uid", async(req, res) => {
+    let { uid } = req.params;
 
     try {
-        let id = req.params.id;
-        let cuerpo = req.body
-        let productoId = await productManagment.productInList(id)
+        let productoId = await productsModel.findById({ _id: uid }).lean()
         if (!productoId) {
-            res.status(404).send("el producto no se encuentra en la lista")
-        } else if (!cuerpo) { //gregar justificaciones
-            res.status(400).send("El contenido esta vacio")
+            res.redirect("products")
+            console.log("el producto no se encuentra en la lista")
         } else {
-            const productUpdate = await productManagment.buscarYActualizar(id, cuerpo)
-            res.send("el producto fue actualizado correctamente")
-        }
-    } catch (error) { res.send("se produjo error al actualizar") }
+            let producto = productoId
+            res.render("product", { producto })
 
-});
-route.delete("/:id", async(req, res) => {
-    const product = await productManagment.productInList(req.params.id)
-    if (!product) {
-        res.status(404).send("producto no encontrado")
-    } else {
-        await productManagment.deleteProduct(req.params.id)
-        res.status(200).send("el producto fue eliminado correctamente")
+        }
+
+    } catch (error) {
+        console.log({
+            status: 500.,
+            mensaje: "ah ocurrido un error al buscar un producto en bd"
+        })
+
     }
+});
+router.post("/", upload.single('image'), async(req, res) => {
+
+        let thumbnail = req.file.filename
+        let { title, description, price, stock, code, category, quantity } = req.body;
+
+        if (!title || !description || !price || !stock || !thumbnail || !code || !category || !quantity) {
+            console.log({
+                status: 400,
+                result: "error",
+                error: "Incomplete values"
+            })
+        }
+
+        try {
+            await productsModel.create({
+                title,
+                description,
+                price,
+                stock,
+                thumbnail, //imagen
+                code,
+                category,
+                quantity
+            });
+            res.redirect("products")
+
+        } catch (error) {
+
+            console.log({
+                status: 500,
+                result: "error",
+                error: "Error saving data on DB" + error
+            });
+        }
+
+    })
+    // update product by (id)
+router.put("/:pid", async(req, res) => {
+    let { pid } = req.params;
+    let productToReplace = req.body
+    if (!pid || !productToReplace.title || !productToReplace.description || !productToReplace.price || !productToReplace.stock || !productToReplace.code || !productToReplace.thumbnail || !productToReplace.category || !productToReplace.quantity) {
+        console.log({
+            status: 400,
+            result: "error",
+            error: "Incomplete values"
+        })
+    }
+    try {
+
+        let result = await productsModel.updateOne({ _id: pid }, productToReplace)
+        let products = result
+        res.render("products", { products })
+        console.log({
+            status: 200,
+            result: "success",
+            payload: result
+        })
+
+    } catch (error) {
+        console.log({
+            status: 500,
+            result: "error",
+            error: "Error updating product on DB" + error
+        });
+
+    }
+
+    /*
+        try {
+
+            let productoId = await productsModel.findById(id)
+            if (!productoId) {
+                res.status(404).send("el producto no se encuentra en la lista")
+            } else if (!cuerpo) { //gregar justificaciones
+                res.status(400).send("El contenido esta vacio")
+            } else {
+                const productUpdate = await productsModel.findByIdAndUpdate
+                res.send("el producto fue actualizado correctamente")
+            }
+        } catch (error) { res.send("se produjo error al actualizar") }
+        */
 
 })
 
-module.exports = route;
+
+router.delete("/:pid", async(req, res) => {
+    let { pid } = req.params;
+    try {
+
+        let result = await productsModel.deleteOne({ _id: pid });
+        let products = result
+        res.render("products", { products })
+        console.log({
+            status: 200,
+            result: "sucess",
+            payload: result
+        });
+
+    } catch (error) {
+        console.log({
+            status: 500,
+            result: "error",
+            error: "Error deleting data on DB" + error
+        });
+
+    }
+})
+
+
+module.exports = router

@@ -1,19 +1,6 @@
-<div>
-    <h1 style="text-align:center">Nuestros Productos </h1>
-    <div id="productos">
-        {{#each products}}
-        <div class="card" style="width: 18rem;">
-            <img src="{{this.thumbnail}}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Nombre: {{this.title}}</h5>
-                <p class="card-text">price: ${{this.price}}</p>
-                <p class="card-text">categoria:{{this.category}}</p>
-                <p class="card-text">stock:{{this.stock}}</p>
-                <a href="#" class="btn btn-primary">Ver Detalle</a>
-            </div>
-        </div>
-        {{/each}}
-    </div>
+<h1> bienvenido a pastalandia</h1>
 
-</div>
-
+<ul>
+    <li><a href="/api/products">Nuestros Productos</a></li>
+    <li><a href="/api/products/new">Nuevo Producto</a></li>
+</ul>

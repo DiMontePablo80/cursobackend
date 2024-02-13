@@ -1,20 +1,22 @@
 const express = require("express")
-const route = express.Router()
-const productManagment = require("../segundaEntrega")
+const router = express.Router()
 
+router.get("/home", (req, res) => {
+    res.render("home")
 
-route.get("/home", async(req, res) => {
-    const products = await productManagment.getProducts()
-    res.render("home", {
-        products: products,
-
-    })
 })
 
-route.get("/realTimeProducts", (req, res) => {
-
+// router productos_Socket
+router.get("/realTimeProducts", (req, res) => {
     res.render("realTimeProducts")
 })
 
+//router Chat_socket
+router.get('/chat', (req, res) => {
+    res.render('chat', {})
+})
 
-module.exports = route
+
+
+
+module.exports = router
