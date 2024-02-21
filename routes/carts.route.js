@@ -2,8 +2,11 @@ const express = require("express")
 const carts = require("../carts")
 const cartsModel = require("../dao/models/carts.model")
 const route = express.Router()
+const { paginateSubDocs } = require("mongoose-paginate-v2")
 
 route.get("/", async(req, res) => {
+    let page = parseInt(req.query.page, 10) || 1
+    let limit = parseInt(req.query.limit, 10) || 5
     try {
         const carts = await cartsModel.find()
         res.status(200).send({
@@ -72,7 +75,7 @@ route.post("/", async(req, res) => {
         });
     }
 })
-route.post("/:cid/product/:pid", async(req, res) => {
+route.post("/:cid/products/:pid", async(req, res) => {
     try {
         const cardId = parseInt(req.params.cid)
         const productId = parseInt(req.params.pid)

@@ -1,15 +1,19 @@
-<div>
+<>
     <h1 style="text-align:center">Nombre: {{producto.title}} </h1>
     <div >
         
         <div class="card" style="width: 18rem;">
-            <img src="{{producto.thumbnail}}" class="card-img-top" alt="..."> 
+            <img src="/images/products/{{producto.thumbnail}}" class="card-img-top" alt="..."> 
             <div class="card-body">
                 <h5 class="card-title"></h5>
                 <p class="card-text">description: ${{producto.description}}</p>
                 <p class="card-text">price: ${{producto.price}}</p>
                 <p class="card-text">categoria:{{producto.category}}</p>
+                <br>
+                <a href="" class="btn btn-primary">Agregar al Carrito</a>
             </div>
         </div>
 
     </div>
+     <!-- tengo que cambiar la direccion de img para que lea las imagenes de la carpeta nueva,
+     //resetear base de datos y crear nuevos productos de esta manera -->

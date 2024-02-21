@@ -62,6 +62,9 @@ io.on('connection', (socket) => {
         }
         productsModel.create(nuevoProd)
         io.emit("productos", lista_Productos)
+
+
+
     })
 })
 let messages = [];

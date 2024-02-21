@@ -1,18 +1,41 @@
 <div>
     <h1 style="text-align:center">Nuestros Productos </h1>
+    {{#if isValid}}
     <div id="productos">
-        {{#each products}}
+        {{#each docs}}
         <div class="card" style="width: 18rem;">
-            <img src="{{this.thumbnail}}" class="card-img-top" alt="...">
+            <img src="/images/products/{{this.thumbnail}}" class="card-img-top" alt="...">
             <div class="card-body">
                 <h5 class="card-title">Nombre: {{this.title}}</h5>
                 <p class="card-text">price: ${{this.price}}</p>
                 <p class="card-text">categoria:{{this.category}}</p>
                 <p class="card-text">stock:{{this.stock}}</p>
-                <a href="products/{{this._id}}" class="btn btn-primary">Ver Detalle</a>
+                <a href="products/{{this.id}}" class="btn btn-primary">Ver Detalle</a>
+                <br>
+                <a href="products/update/{{this.id}}" class="btn btn-primary">Modificar</a>
+                <br>
+                <a href="" class="btn btn-primary">Agregar al Carrito</a>
             </div>
         </div>
         {{/each}}
     </div>
+    <br>
+
+    <div>
+        {{#if hasPrevPage}}
+        <a href="{{this.prevLink}}"><< previo</a>
+        {{/if}}
+        &nbsp;
+        {{this.page}}
+        &nbsp;
+        {{#if hasNextPage}}
+        <a href="{{this.nextLink}}"> >>siguiente</a>
+        {{/if}}
+    </div>
+    {{else}}
+    <h1>No hay productos para mostrar</h1>
+    {{/if}}
+
+
 
 </div>

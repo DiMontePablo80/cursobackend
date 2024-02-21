@@ -2,14 +2,43 @@ const express = require("express")
 const router = express.Router()
 const upload = require("../utils/upload.middleware");
 const productsModel = require("../dao/models/products.model")
-
+const { paginateSubDocs } = require("mongoose-paginate-v2")
 
 // get all products
 router.get("/", async(req, res) => {
+    let category = req.query.category
+    let page = parseInt(req.query.page, 10) || 1
+    let limit = parseInt(req.query.limit, 10) || 5
 
     try {
-        const products = await productsModel.find().lean()
-        res.render("products", { products })
+
+        if (!category) {
+            const products = await productsModel.paginate({}, {
+                page,
+                limit,
+                lean: true
+            })
+            products.prevLink = products.hasPrevPage ? `http://localhost:8080/api/products?page=${products.prevPage}` : ''
+            products.nextLink = products.hasNextPage ? `http://localhost:8080/api/products?page=${products.nextPage}` : ''
+            products.isValid = !(page <= 0 || page > products.totalPages)
+            res.render("products", products)
+            console.log(products)
+
+        }
+        if (category) {
+            const products = await productsModel.paginate({ category: req.query.category }, {
+                page,
+                limit,
+                lean: true
+            })
+            products.prevLink = products.hasPrevPage ? `http://localhost:8080/api/products?page=${products.prevPage}` : ''
+            products.nextLink = products.hasNextPage ? `http://localhost:8080/api/products?page=${products.nextPage}` : ''
+            products.isValid = !(page <= 0 || page > products.totalPages)
+            res.render("products", products)
+            console.log(products)
+        }
+
+
 
     } catch (error) {
         console.log("Cannot get users from Mongo: " + error)
@@ -19,11 +48,16 @@ router.get("/", async(req, res) => {
             error: "Error getting data from DB"
 
         })
+
     }
+
 })
 
 router.get("/new", (req, res) => {
     res.render("new-product")
+})
+router.put("/update/:pid", (req, res) => {
+    res.render("update/:pid")
 })
 
 // buscar un producto por ID
@@ -79,60 +113,45 @@ router.post("/", upload.single('image'), async(req, res) => {
 
     })
     // update product by (id)
-router.put("/:pid", async(req, res) => {
-    let { pid } = req.params;
-    let productToReplace = req.body
-    if (!pid || !productToReplace.title || !productToReplace.description || !productToReplace.price || !productToReplace.stock || !productToReplace.code || !productToReplace.thumbnail || !productToReplace.category || !productToReplace.quantity) {
-        console.log({
-            status: 400,
-            result: "error",
-            error: "Incomplete values"
-        })
+router.put("/update/:pid"), async(req, res) => {
+    const { pid } = req.params;
+    if (!pid) {
+        return res.status(400).json({ message: 'id es requerido' });
+    }
+
+    try {
+        let product = await productsModel.findById({ id: pid }).lean();
+        if (!product) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+        let id = pid
+        await productsModel.findByIdAndUpdate(
+            id,
+            req.body, { new: true });
+        res.render("products")
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Hubo un error al actualizar el producto' });
+    }
+}
+
+router.delete("/delete/:pid"), async(req, res) => {
+    const { pid } = req.params;
+    if (!pid) {
+        return res.status(400).json({ message: 'id es requerido' });
     }
     try {
-
-        let result = await productsModel.updateOne({ _id: pid }, productToReplace)
-        let products = result
-        res.render("products", { products })
-        console.log({
-            status: 200,
-            result: "success",
-            payload: result
-        })
-
+        let [product] = await productsModel.findById({ id: pid });
+        if (!product) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+        await productsModel.findByIdAndDelete({ id: pid });
+        res.json({ message: 'Producto eliminado con éxito' });
     } catch (error) {
-        console.log({
-            status: 500,
-            result: "error",
-            error: "Error updating product on DB" + error
-        });
-
+        console.log(error)
+        return res.status(500).json({ message: 'Hubo un error al eliminar el producto' });
     }
-})
-
-
-router.delete("/:pid", async(req, res) => {
-    let { pid } = req.params;
-    try {
-
-        let result = await productsModel.deleteOne({ _id: pid });
-        let products = result
-        res.render("products", { products })
-        console.log({
-            status: 200,
-            result: "sucess",
-            payload: result
-        });
-
-    } catch (error) {
-        console.log({
-            status: 500,
-            result: "error",
-            error: "Error deleting data on DB" + error
-        });
-
-    }
-})
+}
 
 
 module.exports = router
