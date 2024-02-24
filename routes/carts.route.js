@@ -8,12 +8,22 @@ route.get("/", async(req, res) => {
     let page = parseInt(req.query.page, 10) || 1
     let limit = parseInt(req.query.limit, 10) || 5
     try {
-        const carts = await cartsModel.find()
+        const carts = await cartsModel.find({}, {
+            page,
+            limit,
+            lean: true
+        })
         res.status(200).send({
             status: 200,
             result: "success",
             payload: carts
         })
+
+        carts.prevLink = products.hasPrevPage ? `http://localhost:8080/api/carts?page=${carts.prevPage}` : ''
+        carts.nextLink = products.hasNextPage ? `http://localhost:8080/api/carts?page=${carts.nextPage}` : ''
+        carts.isValid = !(page <= 0 || page > products.totalPages)
+        res.render("carts", carts)
+        console.log(carts)
     } catch (error) {
         console.log("Cannot get users from Mongo: " + error)
         res.status(500).send({
@@ -76,10 +86,11 @@ route.post("/", async(req, res) => {
     }
 })
 route.post("/:cid/products/:pid", async(req, res) => {
+    const cardId = parseInt(req.params.cid)
+    const productId = parseInt(req.params.pid)
+    let quantity = parseInt(req.body)
     try {
-        const cardId = parseInt(req.params.cid)
-        const productId = parseInt(req.params.pid)
-        let quantity = parseInt(req.body)
+
 
         let cart = await carts.cartInList(cardId)
         if (!cart) {

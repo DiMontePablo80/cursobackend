@@ -9,7 +9,6 @@ router.get("/", async(req, res) => {
     let category = req.query.category
     let page = parseInt(req.query.page, 10) || 1
     let limit = parseInt(req.query.limit, 10) || 5
-
     try {
 
         if (!category) {
@@ -37,9 +36,6 @@ router.get("/", async(req, res) => {
             res.render("products", products)
             console.log(products)
         }
-
-
-
     } catch (error) {
         console.log("Cannot get users from Mongo: " + error)
         console.log({
@@ -56,14 +52,10 @@ router.get("/", async(req, res) => {
 router.get("/new", (req, res) => {
     res.render("new-product")
 })
-router.put("/update/:pid", (req, res) => {
-    res.render("update/:pid")
-})
 
 // buscar un producto por ID
 router.get("/:uid", async(req, res) => {
     let { uid } = req.params;
-
     try {
         let productoId = await productsModel.findById({ _id: uid }).lean()
         if (!productoId) {
@@ -71,63 +63,62 @@ router.get("/:uid", async(req, res) => {
             console.log("el producto no se encuentra en la lista")
         } else {
             let producto = productoId
+            console.log(producto)
             res.render("product", { producto })
-
         }
-
     } catch (error) {
         console.log({
             status: 500,
             mensaje: "ah ocurrido un error al buscar un producto en bd"
         })
-
     }
 })
 
 router.post("/", upload.single('image'), async(req, res) => {
 
-        let thumbnail = req.file.filename
-        let producto = req.body;
+    let thumbnail = req.file.filename
+    let producto = req.body;
 
-        try {
-            await productsModel.create({
-                title: producto.title,
-                description: producto.description,
-                price: producto.price,
-                stock: producto.stock,
-                thumbnail: thumbnail, //imagen
-                code: producto.code,
-                category: producto.category,
-                quantity: producto.quantity
-            });
-            res.redirect("products")
+    try {
+        await productsModel.create({
+            title: producto.title,
+            description: producto.description,
+            price: producto.price,
+            stock: producto.stock,
+            thumbnail: thumbnail, //imagen
+            code: producto.code,
+            category: producto.category,
+            quantity: producto.quantity
+        });
+        res.redirect("products")
 
-        } catch (error) {
+    } catch (error) {
 
-            console.log({
-                status: 500,
-                result: "error",
-                error: "Error saving data on DB" + error
-            });
-        }
+        console.log({
+            status: 500,
+            result: "error",
+            error: "Error saving data on DB" + error
+        });
+    }
 
-    })
-    // update product by (id)
+})
+
+// update product by (id)
+
 router.put("/update/:pid"), async(req, res) => {
     const { pid } = req.params;
+
     if (!pid) {
         return res.status(400).json({ message: 'id es requerido' });
     }
 
     try {
-        let product = await productsModel.findById({ id: pid }).lean();
+        let product = await productsModel.findById({ _id: uid }).lean();
         if (!product) {
             return res.status(404).json({ message: 'Producto no encontrado' });
         }
-        let id = pid
-        await productsModel.findByIdAndUpdate(
-            id,
-            req.body, { new: true });
+
+        await productsModel.findByIdAndUpdate({ _id: uid }, req.body);
         res.render("products")
     } catch (error) {
         console.log(error)
@@ -141,11 +132,11 @@ router.delete("/delete/:pid"), async(req, res) => {
         return res.status(400).json({ message: 'id es requerido' });
     }
     try {
-        let [product] = await productsModel.findById({ id: pid });
+        let [product] = await productsModel.findById({ _id: pid });
         if (!product) {
             return res.status(404).json({ message: 'Producto no encontrado' });
         }
-        await productsModel.findByIdAndDelete({ id: pid });
+        await productsModel.findByIdAndDelete({ _id: pid });
         res.json({ message: 'Producto eliminado con éxito' });
     } catch (error) {
         console.log(error)
