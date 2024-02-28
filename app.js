@@ -1,7 +1,8 @@
 const express = require("express");
 const routerProductos = require("./routes/productos.router")
 const routerCarts = require("./routes/carts.route")
-const routerUser = require("./routes/user.router")
+
+const routerSession = require('./routes/sessions')
 const views = require("./routes/views.router")
 const handlebars = require("express-handlebars")
 const { Server } = require("socket.io");
@@ -10,11 +11,13 @@ const mongoose = require("mongoose");
 const productsModel = require("./dao/models/products.model");
 const messagesModel = require("./dao/models/messages.model");
 const cartsModel = require("./dao/models/carts.model")
+const cookieParser = require("cookie-parser")
+const session = require('express-session')
+const fileStore = require("session-file-store")
+const fileStorage = fileStore(session)
 
 mongoose.connect("mongodb://localhost:27017/ecommers")
 const app = express();
-
-
 const serverHttp = app.listen(8080, () => {
         console.log("corriendo aplicacion por puerto 8080")
     })
@@ -28,14 +31,28 @@ app.set("view engine", "handlebars");
 // midlware
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + "/public")); //sino no me encuentra el js
+app.use(express.static(__dirname + "/public"));
+//sino no me encuentra el js
+
+app.use(cookieParser())
+
+app.use(session({
+    store: new fileStorage({
+        path: './sessions',
+        ttl: 100,
+        retries: 0
+    }),
+    secret: "secretCode",
+    resave: true,
+    saveUninitialized: true
+}))
 
 //routes
 app.use("/api/products", routerProductos)
 app.use("/api/carts", routerCarts)
-app.use("/api/users", routerUser)
-    // agregar rutas de usuarios
+app.use("/api/sessions", routerSession)
 app.use("/", views)
+
 
 let lista_Productos
 io.on('connection', (socket) => {

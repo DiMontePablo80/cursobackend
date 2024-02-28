@@ -1,0 +1,44 @@
+<div>
+    <h1 style="text-align:center">carritos de compras</h1>
+    {{#if isValid}}
+    <div id="carts">
+        {{#each docs}}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">cardId: {{this.id}}</h5>
+                {{#each products}}
+                <div>
+                    <br>
+                    <p class="card-text">title:{{this.title}}</p>
+                    <p class="card-text">price:{{this.price}}</p>
+                    <img src="/images/products/{{this.products.thumbnail}}" class="card-img-top" alt="...">
+                    <p class="card-text">category:{{this.category}}</p>
+<br>
+                </div>
+
+                {{/each}}
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    <br>
+
+    <div>
+        {{#if hasPrevPage}}
+        <a href="{{this.prevLink}}">
+            << previo</a>
+                {{/if}}
+                &nbsp;
+                {{this.page}}
+                &nbsp;
+                {{#if hasNextPage}}
+                <a href="{{this.nextLink}}"> >>siguiente</a>
+                {{/if}}
+    </div>
+    {{else}}
+    <h1>No hay carritos para mostrar</h1>
+    {{/if}}
+
+
+
+</div>

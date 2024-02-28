@@ -8,20 +8,28 @@ route.get("/", async(req, res) => {
     let page = parseInt(req.query.page, 10) || 1
     let limit = parseInt(req.query.limit, 10) || 5
     try {
-        const carts = await cartsModel.find({}, {
+
+        if (!limit) {
+            const carts = await cartsModel.paginate({}, {
+                page,
+                limit,
+                lean: true
+            })
+            carts.prevLink = carts.hasPrevPage ? `http://localhost:8080/api/carts?page=${carts.prevPage}` : ''
+            carts.nextLink = carts.hasNextPage ? `http://localhost:8080/api/carts?page=${carts.nextPage}` : ''
+            carts.isValid = !(page <= 0 || page > carts.totalPages)
+            res.render("carts", carts)
+            console.log(carts)
+
+        }
+        const carts = await cartsModel.paginate({}, {
             page,
             limit,
             lean: true
         })
-        res.status(200).send({
-            status: 200,
-            result: "success",
-            payload: carts
-        })
-
-        carts.prevLink = products.hasPrevPage ? `http://localhost:8080/api/carts?page=${carts.prevPage}` : ''
-        carts.nextLink = products.hasNextPage ? `http://localhost:8080/api/carts?page=${carts.nextPage}` : ''
-        carts.isValid = !(page <= 0 || page > products.totalPages)
+        carts.prevLink = carts.hasPrevPage ? `http://localhost:8080/api/carts?page=${carts.prevPage}` : ''
+        carts.nextLink = carts.hasNextPage ? `http://localhost:8080/api/carts?page=${carts.nextPage}` : ''
+        carts.isValid = !(page <= 0 || page > carts.totalPages)
         res.render("carts", carts)
         console.log(carts)
     } catch (error) {
@@ -53,6 +61,7 @@ route.get("/:cid", async(req, res) => {
     }
 
 });
+
 route.post("/", async(req, res) => {
     let product = req.body;
 
@@ -103,7 +112,6 @@ route.post("/:cid/products/:pid", async(req, res) => {
     } catch (error) {
         res.send("ocurrio un error al guardar el producto en el carrito")
     }
-
-
 })
+
 module.exports = route

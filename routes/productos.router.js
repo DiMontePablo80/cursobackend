@@ -34,7 +34,7 @@ router.get("/", async(req, res) => {
             products.nextLink = products.hasNextPage ? `http://localhost:8080/api/products?page=${products.nextPage}` : ''
             products.isValid = !(page <= 0 || page > products.totalPages)
             res.render("products", products)
-            console.log(products)
+
         }
     } catch (error) {
         console.log("Cannot get users from Mongo: " + error)
